@@ -2,15 +2,30 @@ from mcdreforged.api.types import PluginServerInterface,Info
 from mcdreforged.api.command import *
 from mcdreforged.api.all import *
 import os
+import requests
 
 PLUGIN_METADATA = {
     'id': 'recorder',
-    'version': '1.0.0',
+    'version': '1.0.1',
     'name': 'Recorder',
     'author': 'Tuffy163'
 }
 
 data = []
+version = '1.0.1'
+
+def check_update(server):
+    global version
+    url_1 = 'https://tuffy163.github.io/Recorder/version.html'
+    url_2 = 'https://tuffy163.github.io/Recorder/Recorder.py'
+    myfile_1 = requests.get(url_1)
+    myfile_2 = requests.get(url_2)
+    server.say('§a当前版本为§r§c'+version+'§r§a，服务器版本为§r§c'+myfile_1.text[:-1])
+    if myfile_1.text[:-1] != version:
+        open('Recorder.py','wb').write(myfile_2.content)
+        server.say('§e插件更新完成，请使用!!MCDR reload plugin重载插件')
+    else :
+        server.say('§e插件版本为最新版，不需要进行更新')
 
 class Position:
     def __init__(self, name, x, y, z, dimension):
@@ -144,6 +159,12 @@ def execute_arg(server,info,args) :
                         d = get_format_name(pos.dimension)
                         server.execute('/execute as '+n+' in '+d+' run tp '+pos.x+' '+pos.y+' '+pos.z)
 
+        if args[1] == 'update' and len(args) == 2:
+            if info.player == 'Tuffy163':
+                check_update(server)
+            else :
+                server.reply(info,'§c只有Tuffy163能够使用此命令')
+
         if args[1] == 'help' and len(args) == 2:
             server.reply(info,'§a====================Rec Help Documentation========================')
             server.reply(info,'§a!!rec(order) add <name> <x> <y> <z> <dimension> [--force] 添加位置')
@@ -153,6 +174,7 @@ def execute_arg(server,info,args) :
             server.reply(info,'§a!!rec(order) save 保存位置')
             server.reply(info,'§a!!rec(order) load 读取位置')
             server.reply(info,'§a!!rec(order) teleport <name> 传送位置 (仅限Owner,Admin,Helper使用)')
+            server.reply(info,'§a!!rec(order) update 更新插件 (仅限Tuffy163使用)')
             server.reply(info,'§a!!rec(order) help 查看帮助信息')
             server.reply(info,'§a!!rec(order) 查看帮助信息')
             server.reply(info,'§a====================Programmed by Tuffy163========================')
@@ -166,6 +188,7 @@ def execute_arg(server,info,args) :
         server.reply(info,'§a!!rec(order) save 保存位置')
         server.reply(info,'§a!!rec(order) load 读取位置')
         server.reply(info,'§a!!rec(order) teleport <name> 传送位置 (仅限Owner,Admin,Helper使用)')
+        server.reply(info,'§a!!rec(order) update 更新插件 (仅限Tuffy163使用)')
         server.reply(info,'§a!!rec(order) help 查看帮助信息')
         server.reply(info,'§a!!rec(order) 查看帮助信息')
         server.reply(info,'§a====================Programmed by Tuffy163========================')
