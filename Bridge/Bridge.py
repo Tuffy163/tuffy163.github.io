@@ -12,12 +12,12 @@ import requests
 
 PLUGIN_METADATA = {
     'id': 'bridge',
-    'version': '1.0.0',
+    'version': '1.0.1',
     'name': 'Bridge',
     'author': 'Tuffy163'
 }
 
-version = '1.0.0'
+version = '1.0.1'
 
 def check_update(server):
     global version
@@ -111,7 +111,7 @@ def on_info(server: PluginServerInterface, info: Info):
                 sys_tray = explorer.window(class_name="Shell_TrayWnd")
                 sys_tray.child_window(title_re='( )?QQ:').click()
                 app = Application(backend='uia').connect(title='QQ',timeout = 10)
-                dlg = app.window(class_name = 'Chrome_WidgetWin_1')
+                dlg = app.window(class_name = 'Chrome_WidgetWin_1',title='QQ')
                 chat_box = dlg.child_window(title = '八方旅人|1.21|至夏',control_type = 'Edit')
                 send_box = dlg.child_window(title = '发送',control_type = 'Button')
                 message = dlg.child_window(title = '消息列表',control_type = 'Window')
