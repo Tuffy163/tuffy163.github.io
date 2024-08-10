@@ -10,14 +10,19 @@ import queue
 import os
 import requests
 
+# =============== Config =============== #
+Message_Prefix = 'Example'
+Group_Name = '八方旅人|1.21|至夏'
+# ====================================== #
+
 PLUGIN_METADATA = {
     'id': 'bridge',
-    'version': '1.0.1',
+    'version': '1.0.2',
     'name': 'Bridge',
     'author': 'Tuffy163'
 }
 
-version = '1.0.1'
+version = '1.0.2'
 
 def check_update(server):
     global version
@@ -81,7 +86,7 @@ def on_player_joined(server: PluginServerInterface, player: str, info: Info):
         for bind in binds:
             if bind.id == player:
                 find = True
-        if not find and not player.startswith('bot_'):
+        if not find:
             server.execute('kick '+player+' 请加入QQ群467581900添加白名单')
 
 def on_info(server: PluginServerInterface, info: Info):
@@ -112,7 +117,7 @@ def on_info(server: PluginServerInterface, info: Info):
                 sys_tray.child_window(title_re='( )?QQ:').click()
                 app = Application(backend='uia').connect(title='QQ',timeout = 10)
                 dlg = app.window(class_name = 'Chrome_WidgetWin_1',title='QQ')
-                chat_box = dlg.child_window(title = '八方旅人|1.21|至夏',control_type = 'Edit')
+                chat_box = dlg.child_window(title = Group_Name,control_type = 'Edit')
                 send_box = dlg.child_window(title = '发送',control_type = 'Button')
                 message = dlg.child_window(title = '消息列表',control_type = 'Window')
                 server.say('§a定位窗口成功')
@@ -154,12 +159,12 @@ def on_info(server: PluginServerInterface, info: Info):
             server.say('§e!!bridge state 查看状态')
             server.say('§e!!bridge whitelist 切换白名单状态')
         if not info.player == None and not info.content == None :
-            task.put('[MC] ' + info.player + ' : ' + info.content)
+            task.put('[MC|'+Message_Prefix+'] ' + info.player + ' : ' + info.content)
     else :
         if 'joined the game' in info.content :
-            task.put('[MC] ' + info.content)
+            task.put('[MC|'+Message_Prefix+'] ' + info.content)
         if 'left the game' in info.content :
-            task.put('[MC] ' + info.content)
+            task.put('[MC|'+Message_Prefix+'] ' + info.content)
 
 def Receive(server):
     global running
@@ -178,7 +183,7 @@ def Receive(server):
                         break
             send_message = '[QQ] '+ Last_message
             if pre_message != send_message:
-                if not Last_message.split(':',1)[1].startswith(' [MC]'):
+                if not Last_message.split(':',1)[1].startswith(' [MC|'):
                     server.say(send_message)
                 if Text[0].window_text().startswith('/bind'):
                     task.put('bm'+Text[0].window_text()[6:])
